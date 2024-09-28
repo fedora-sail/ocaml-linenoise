@@ -1,19 +1,21 @@
 Name:           ocaml-linenoise
 Version:        1.5.1
 Release:        %autorelease
-Summary:        Self-contained OCaml bindings to linenoise, easy high level readline functionality in OCaml
+Summary:        OCaml bindings to linenoise
 
-License:        BSD-3-clause
+License:        BSD-3-Clause
 URL:            https://github.com/ocaml-community/%{name}
 Source0:        https://github.com/ocaml-community/%{name}/archive/v%{version}/linenoise-v%{version}.tar.gz
+
+# Unbundle linenoise
+Patch0:          unbundle-linenoise.patch
 
 # OCaml packages not built on i686 since OCaml 5 / Fedora 39.
 ExcludeArch:    %{ix86}
 
 BuildRequires:  ocaml >= 4.03
 BuildRequires:  ocaml-dune >= 1.1
-
-Provides: bundled(linenoise)
+BuildRequires:  linenoise-devel
 
 %description
 Self-contained OCaml bindings to linenoise.
@@ -28,6 +30,9 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n ocaml-linenoise-%{version} -p1
+
+# Ensure the bundled linenoise sources are not used in the build
+rm src/linenoise_src.*
 
 %build
 %dune_build
